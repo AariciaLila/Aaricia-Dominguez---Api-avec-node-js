@@ -10,6 +10,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 // 2) Configuration de la base de données
+// => package qui facilite les interactions entre notre application Express et notre base de données MongoDB
 
 const mongoose = require('mongoose');
 
@@ -54,8 +55,9 @@ app.use((error, req, res, next) => {
   });
 
 // 6) Connexion de l'API au cluster MongoDB
-
-mongoose.connect(process.env.DATABASE_URL,{ useNewUrlParser: true,
+// => MongoDB Atlas permet d'héberger gratuitement une base de données MongoDB
+mongoose.connect('mongodb+srv://root:root@cluster0.gslftzi.mongodb.net/?retryWrites=true&w=majority',
+{ useNewUrlParser: true,
 useUnifiedTopology: true })
 .then(() => {
     console.log('Connexion à MongoDB réussie !')

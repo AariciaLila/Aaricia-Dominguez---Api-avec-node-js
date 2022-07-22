@@ -2,9 +2,11 @@
 /*                             feed.js : Configuration des contrôleurs                        */
 /*============================================================================================*/
 
+// Fichier de contrôleur qui exporte des méthodes qui sont ensuite attribuée aux routes pour améliorer la maintenabilité de notre applications
+
 const { validationResult } = require('express-validator/check');
-const produits = require('../models/produits.js');
-const Produits = require('../models/produits.js');
+// Les méthodes de notre modèle Produit permettent d'intéragir avec la base de données
+const produits = require('../models/produits.js'); 
 const fs = require('fs');
 const path = require('path');
 
@@ -14,11 +16,11 @@ exports.getProduits = (req, res, next) => {
   const currentPage = req.query.page || 1;
   const perPage = 2;
   let totalItems;
-  Produits.find()
+  produits.find() // retourne tous les Produits
     .countDocuments()
     .then(count => {
       totalItems = count;
-      return Produits.find()
+      return produits.find()
         .skip((currentPage - 1) * perPage)
         .limit(perPage);
     })
@@ -60,7 +62,7 @@ exports.createProduit = (req, res, next) => {
     creator: { name: 'Sciences-u' }
   });
   produits
-    .save()
+    .save() // enregistre un Produit
     .then((result) => {
       res.status(201).json({
         message: 'Produit created successfully!',
@@ -81,7 +83,7 @@ exports.createProduit = (req, res, next) => {
 
 exports.getProduit = (req, res, next) => {
   const produitId = req.params.produitId;
-  Produits.findById(produitId)
+  produits.findById(produitId)
     .then(produit => {
       if (!produit) {
         const error = new Error('Could not find produit.');
@@ -105,7 +107,7 @@ exports.getImg = (req, res, next) =>{
 
 // 5) Mise à jour d'un produit existant
 
-exports.updatePost = (req, res, next) => {
+exports.updatePost = (req, res, next) => { // méthode du modèle Produit qui permet de mettre à jour un Produit dans la base de données
   const produitId = req.params.produitId;
   console.log('req.file update: ', req.file.path);
   console.log('req.body update: ', req.body);
@@ -122,7 +124,7 @@ exports.updatePost = (req, res, next) => {
     error.statusCode = 422;
     throw error;
   }
-  Produits.findById(produitId)
+  produits.findById(produitId)
     .then(produit => {
       if (!produit) {
         const error = new Error('Could not find produit.');
@@ -150,9 +152,9 @@ exports.updatePost = (req, res, next) => {
   
 // 6) Suppression d'un produit
 
-exports.deleteProduit = (req, res, next) => {
+exports.deleteProduit = (req, res, next) => { // méthode de notre modèle Produit qui permet de supprimer un Produit dans la base de données
   const produitId = req.params.produitId;
-  Produits.findById(produitId)
+  produits.findById(produitId)
     .then(produit => {
       if (!produit) {
         const error = new Error('Could not find produit.');
@@ -160,7 +162,7 @@ exports.deleteProduit = (req, res, next) => {
         throw error;
       }
       clearImage(produit.imageUrl);
-      return Produits.findByIdAndRemove(produitId);
+      return produits.findByIdAndRemove(produitId);
     })
     .then(result => {
       console.log(result);

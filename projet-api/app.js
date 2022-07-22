@@ -16,7 +16,7 @@ const mongoose = require('mongoose');
 
 // 3) Configuration du middleware de gestion des fichiers
 
-const multer = require('multer');
+const multer = require('multer'); // package de gestion de fichiers
 
 const feedRoutes = require('./routes/feed');
 const authRoutes = require('./routes/auth');

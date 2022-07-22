@@ -1,8 +1,6 @@
-/**
- * auth.js
- * 
- * Création des utilisateurs
- */
+/*============================================================================================*/
+/*                      auth.js : Configuration du routage des utilisateurs                   */
+/*============================================================================================*/
 
 const express = require('express');
 const { body } = require('express-validator/check');
@@ -17,11 +15,11 @@ router.put(
   [
     body('email')
       .isEmail()
-      .withMessage('Please enter a valid email.')
+      .withMessage('Veuillez saisir une adresse e-mail valide.')
       .custom((value, { req }) => {
         return User.findOne({ email: value }).then(userDoc => {
           if (userDoc) {
-            return Promise.reject('E-Mail address already exists!');
+            return Promise.reject('L\'adresse e-mail existe déjà !');
           }
         });
       })

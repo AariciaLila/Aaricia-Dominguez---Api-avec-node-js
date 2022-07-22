@@ -13,7 +13,7 @@
  
  const multer = require('multer');
  
- const fileStorage = multer.diskStorage({
+ const fileStorage = multer.diskStorage({ // configure le chemin et le nom de fichier pour les fichiers entrants
      destination: (req, file, cb) => {
        cb(null, 'uploads/');
      },
@@ -53,7 +53,7 @@
      body('content')
        .trim()
        .isLength({ min: 5 })
-   ],  upload.single('file'),
+   ],  upload.single('file'), // création d'un middleware qui capture les fichiers d'un certain type (passé en argument), et les enregistre au système de fichiers du serveur à l'aide du storage configuré
    feedController.createProduit);
 
  // 3) Récupération d'un produit spécifique

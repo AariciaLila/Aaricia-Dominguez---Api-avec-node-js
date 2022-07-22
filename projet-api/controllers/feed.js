@@ -7,7 +7,7 @@
 const { validationResult } = require('express-validator/check');
 // Les méthodes de notre modèle Produit permettent d'intéragir avec la base de données
 const produits = require('../models/produits.js'); 
-const fs = require('fs');
+const fs = require('fs'); // package qui expose des méthodes pour intéragir avec le système de fichiers du serveur
 const path = require('path');
 
 // 1) Récupération de la liste de produits en ligne
@@ -28,7 +28,7 @@ exports.getProduits = (req, res, next) => {
       res
         .status(200)
         .json({
-          message: 'Fetched produits successfully.',
+          message: 'Les produits ont été récupérés avec succès.',
           produits: produits,
           totalItems: totalItems
         });
@@ -47,25 +47,27 @@ exports.getProduits = (req, res, next) => {
 exports.createProduit = (req, res, next) => {
   console.log('req.file 1: ', req.file)
   if (!req.file) {
-    const error = new Error('No image provided.');
+    const error = new Error('Aucune image fournie.');
     error.statusCode = 422;
     throw error;
   }
   const imgUrl = req.file.path;
   const title = req.body.title;
   const content = req.body.content;
+
   // 3) Enregistrement du produit dans la base de données
+
   const produits = new Produits({
     title: title,
     content: content,
     imageUrl: imgUrl,
-    creator: { name: 'Sciences-u' }
+    creator: { name: 'Aaricia' }
   });
   produits
     .save() // enregistre un Produit
     .then((result) => {
       res.status(201).json({
-        message: 'Produit created successfully!',
+        message: 'Produit créé avec succès !',
         produits: result
       });
     })
@@ -86,11 +88,11 @@ exports.getProduit = (req, res, next) => {
   produits.findById(produitId)
     .then(produit => {
       if (!produit) {
-        const error = new Error('Could not find produit.');
+        const error = new Error('Impossible de trouver le produit.');
         error.statusCode = 404;
         throw error;
       }
-      res.status(200).json({ message: 'Produitt fetched.', produit: produit });
+      res.status(200).json({ message: 'Produit recherché.', produit: produit });
     })
     .catch(err => {
       if (!err.statusCode) {
@@ -120,14 +122,14 @@ exports.updatePost = (req, res, next) => { // méthode du modèle Produit qui pe
     imageUrl = req.file.path;
   }
   if (!imageUrl) {
-    const error = new Error('No file picked.');
+    const error = new Error('Aucun fichier n\'a été choisi.');
     error.statusCode = 422;
     throw error;
   }
   produits.findById(produitId)
     .then(produit => {
       if (!produit) {
-        const error = new Error('Could not find produit.');
+        const error = new Error('Impossible de trouver le produit.');
         error.statusCode = 404;
         throw error;
       }
@@ -140,7 +142,7 @@ exports.updatePost = (req, res, next) => { // méthode du modèle Produit qui pe
       return produit.save();
     })
     .then(result => {
-      res.status(200).json({ message: 'Produit updated!', produit: result });
+      res.status(200).json({ message: 'Produit mis à jour !', produit: result });
     })
     .catch(err => {
       if (!err.statusCode) {
@@ -157,7 +159,7 @@ exports.deleteProduit = (req, res, next) => { // méthode de notre modèle Produ
   produits.findById(produitId)
     .then(produit => {
       if (!produit) {
-        const error = new Error('Could not find produit.');
+        const error = new Error('Impossible de trouver le produit.');
         error.statusCode = 404;
         throw error;
       }
@@ -166,7 +168,7 @@ exports.deleteProduit = (req, res, next) => { // méthode de notre modèle Produ
     })
     .then(result => {
       console.log(result);
-      res.status(200).json({ message: 'Deleted produit.' });
+      res.status(200).json({ message: 'Produit supprimé.' });
     })
     .catch(err => {
       if (!err.statusCode) {
@@ -176,6 +178,6 @@ exports.deleteProduit = (req, res, next) => { // méthode de notre modèle Produ
     });
 };
 const clearImage = filePath => {
-  filePath = path.join(__dirname, '..', filePath);
-  fs.unlink(filePath, err => console.log(err));
+  filePath = path.join(__dirname, '..', filePath); // configuration du serveur pour renvoyer des fichiers statiques pour une route donnée
+  fs.unlink(filePath, err => console.log(err)); // permet de supprimer un fichier du système de fichiers
 };
